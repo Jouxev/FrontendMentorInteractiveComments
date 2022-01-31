@@ -1,14 +1,12 @@
+import { data } from "../data";
 import styled from "styled-components";
-import { Main } from "./Components";
+import { Comment } from "./Comment";
 
 const Container = styled.div``;
-
-function App() {
+export const Main = () => {
   return (
     <Container>
-      <Main />
+      <Comment />
     </Container>
   );
-}
-
-export default App;
+};
