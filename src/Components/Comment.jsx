@@ -2,13 +2,21 @@ import { useState } from "react";
 import styled from "styled-components";
 import { MdDelete, MdEdit, MdReply } from "react-icons/md";
 
+import DeleteIcon from "../assets/images/icon-delete.svg";
+import EditIcon from "../assets/images/icon-edit.svg";
+import ReplyIcon from "../assets/images/icon-reply.svg";
+
+import PlusIcon from "../assets/images/icon-plus.svg";
+import MinusIcon from "../assets/images/icon-minus.svg";
+
 const Container = styled.div`
   background-color: var(--White);
   height: auto;
-  width: 80%;
+  width: 75%;
   border-radius: 5px;
   display: flex;
   padding: 10px;
+  margin-bottom: 20px;
 `;
 const Left = styled.div`
   display: flex;
@@ -22,10 +30,10 @@ const Left = styled.div`
   background-color: var(--VeryLightGray);
 `;
 const NumOperation = styled.div`
-  color: var(--LightGrayishBlue);
+  fill: var(--LightGrayishBlue);
   cursor: pointer;
   &:hover {
-    color: var(--ModerateBlue);
+    fill: var(--ModerateBlue);
   }
 `;
 const Num = styled.div`
@@ -85,6 +93,9 @@ const ActionItem = styled.div`
     opacity: 0.4;
   }
 `;
+const Icon = styled.img`
+  margin-right: 5px;
+`;
 const CommentText = styled.p`
   font-weight: 400;
   color: var(--GrayishBlue);
@@ -93,34 +104,40 @@ const Tagged = styled.span`
   font-weight: 500;
   color: var(--ModerateBlue);
 `;
-export const Comment = () => {
-  const [num, setnum] = useState(1);
+export const Comment = (props) => {
+  const [num, setnum] = useState(props.comment.score);
 
   return (
     <Container>
       <Left>
-        <NumOperation onClick={() => setnum(num + 1)}> + </NumOperation>
-        <Num> {num} </Num>
-        <NumOperation onClick={() => setnum(num - 1)}> - </NumOperation>
+        <NumOperation onClick={() => setnum(num + 1)}>
+          {" "}
+          <Icon src={PlusIcon} alt={"+"} />{" "}
+        </NumOperation>
+        <Num> {props.comment.score} </Num>
+        <NumOperation onClick={() => setnum(num - 1)}>
+          {" "}
+          <Icon src={MinusIcon} alt={"-"} />{" "}
+        </NumOperation>
       </Left>
       <Right>
         <AuthorContainer>
           <AuthorPic
-            src="https://avatars.githubusercontent.com/u/19846591?s=40&v=4"
-            alt="username"
+            src={props.comment.user.image.png}
+            alt={props.comment.username}
           />
-          <AuthorUsername> Youcef Haroun </AuthorUsername>
+          <AuthorUsername> {props.comment.user.username} </AuthorUsername>
           <Tag> You </Tag>
           <CreateddAt> 1 month a go</CreateddAt>
           <ActionButtons>
             <ActionItem delete>
-              <MdDelete /> Delete
+              <Icon src={DeleteIcon} alt="delete" /> Delete
             </ActionItem>
             <ActionItem>
-              <MdEdit /> Edit{" "}
+              <Icon src={EditIcon} alt="edit" /> Edit{" "}
             </ActionItem>
             <ActionItem>
-              <MdReply /> Reply{" "}
+              <Icon src={ReplyIcon} alt="reply" /> Reply{" "}
             </ActionItem>
           </ActionButtons>
         </AuthorContainer>

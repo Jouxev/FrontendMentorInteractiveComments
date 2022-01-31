@@ -6,7 +6,9 @@ const Container = styled.div``;
 export const Main = () => {
   return (
     <Container>
-      <Comment />
+      {data.comments.map((comment) => (
+        <Comment key={comment.id} comment={comment} />
+      ))}
     </Container>
   );
 };
