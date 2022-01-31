@@ -6,13 +6,13 @@ import DeleteIcon from "../assets/images/icon-delete.svg";
 import EditIcon from "../assets/images/icon-edit.svg";
 import ReplyIcon from "../assets/images/icon-reply.svg";
 
-import PlusIcon from "../assets/images/icon-plus.svg";
-import MinusIcon from "../assets/images/icon-minus.svg";
+import { ReactComponent as PlusIcon } from "../assets/images/icon-plus.svg";
+import { ReactComponent as MinusIcon } from "../assets/images/icon-minus.svg";
 
 const Container = styled.div`
   background-color: var(--White);
   height: auto;
-  width: 75%;
+  width: 60%;
   border-radius: 5px;
   display: flex;
   padding: 10px;
@@ -32,7 +32,7 @@ const Left = styled.div`
 const NumOperation = styled.div`
   fill: var(--LightGrayishBlue);
   cursor: pointer;
-  &:hover {
+  &:hover svg path {
     fill: var(--ModerateBlue);
   }
 `;
@@ -111,13 +111,11 @@ export const Comment = (props) => {
     <Container>
       <Left>
         <NumOperation onClick={() => setnum(num + 1)}>
-          {" "}
-          <Icon src={PlusIcon} alt={"+"} />{" "}
+          <PlusIcon />
         </NumOperation>
         <Num> {props.comment.score} </Num>
         <NumOperation onClick={() => setnum(num - 1)}>
-          {" "}
-          <Icon src={MinusIcon} alt={"-"} />{" "}
+          <MinusIcon />
         </NumOperation>
       </Left>
       <Right>
@@ -142,15 +140,7 @@ export const Comment = (props) => {
           </ActionButtons>
         </AuthorContainer>
         <CommentText>
-          <Tagged>@Tebbon</Tagged> Lorem Ipsum is simply dummy text of the
-          printing and typesetting industry. Lorem Ipsum has been the industry's
-          standard dummy text ever since the 1500s, when an unknown printer took
-          a galley of type and scrambled it to make a type specimen book. It has
-          survived not only five centuries, but also the leap into electronic
-          typesetting, remaining essentially unchanged. It was popularised in
-          the 1960s with the release of Letraset sheets containing Lorem Ipsum
-          passages, and more recently with desktop publishing software like
-          Aldus PageMaker including versions of Lorem Ipsum.
+          <Tagged>@Tebbon</Tagged> {props.comment.content}
         </CommentText>
       </Right>
     </Container>
