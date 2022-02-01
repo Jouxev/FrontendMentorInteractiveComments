@@ -3,7 +3,7 @@ import { Comment } from "./Comment";
 
 const Container = styled.div`
   height: auto;
-  width: 95%;
+  width: 90%;
   margin-left: auto;
   padding-left: 40px;
   position: relative;
@@ -13,7 +13,7 @@ const Container = styled.div`
     display: block;
     position: absolute;
     z-index: 1;
-    left: 20px;
+    left: 10px;
     top: 0;
     bottom: 0;
     border: 2px solid var(--LightGray);
@@ -25,7 +25,7 @@ export const CommentReply = (props) => {
   return (
     <Container>
       {props.replies.map((reply) => (
-        <Comment type="reply" comment={reply} />
+        <Comment type="reply" comment={reply} key={reply.id} />
       ))}
     </Container>
   );

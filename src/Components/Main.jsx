@@ -1,19 +1,26 @@
+import { useState } from "react";
 import { data } from "../data";
 import styled from "styled-components";
 import { Comment } from "./Comment";
 import { AddComment } from "./AddComment";
 
 const Container = styled.div`
-  width: 60%;
+  width: 50%;
   margin: 20px 0px;
 `;
 export const Main = () => {
+  const [comments, setcomments] = useState(data.comments);
+
+  const addComment = (comment) => {
+    setcomments([...comments, comment]);
+  };
+
   return (
     <Container>
-      {data.comments.map((comment) => (
+      {comments.map((comment) => (
         <Comment key={comment.id} comment={comment} />
       ))}
-      <AddComment />
+      <AddComment addcomment={addComment} />
     </Container>
   );
 };

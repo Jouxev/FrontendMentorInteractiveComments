@@ -19,7 +19,7 @@ const CommentContainer = styled.div`
   width: 100%;
   border-radius: 5px;
   display: flex;
-  padding: 10px;
+  padding: 10px 20px;
   margin-bottom: 20px;
 `;
 const Left = styled.div`
