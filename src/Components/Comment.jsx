@@ -2,17 +2,21 @@ import { useState } from "react";
 import styled from "styled-components";
 import { MdDelete, MdEdit, MdReply } from "react-icons/md";
 
+import { data } from "../data";
 import DeleteIcon from "../assets/images/icon-delete.svg";
 import EditIcon from "../assets/images/icon-edit.svg";
 import ReplyIcon from "../assets/images/icon-reply.svg";
 
 import { ReactComponent as PlusIcon } from "../assets/images/icon-plus.svg";
 import { ReactComponent as MinusIcon } from "../assets/images/icon-minus.svg";
+import { CommentReply } from "./CommentReply";
 
-const Container = styled.div`
+const Container = styled.div``;
+
+const CommentContainer = styled.div`
   background-color: var(--White);
   height: auto;
-  width: 60%;
+  width: 100%;
   border-radius: 5px;
   display: flex;
   padding: 10px;
@@ -109,40 +113,56 @@ export const Comment = (props) => {
 
   return (
     <Container>
-      <Left>
-        <NumOperation onClick={() => setnum(num + 1)}>
-          <PlusIcon />
-        </NumOperation>
-        <Num> {props.comment.score} </Num>
-        <NumOperation onClick={() => setnum(num - 1)}>
-          <MinusIcon />
-        </NumOperation>
-      </Left>
-      <Right>
-        <AuthorContainer>
-          <AuthorPic
-            src={props.comment.user.image.png}
-            alt={props.comment.username}
-          />
-          <AuthorUsername> {props.comment.user.username} </AuthorUsername>
-          <Tag> You </Tag>
-          <CreateddAt> 1 month a go</CreateddAt>
-          <ActionButtons>
-            <ActionItem delete>
-              <Icon src={DeleteIcon} alt="delete" /> Delete
-            </ActionItem>
-            <ActionItem>
-              <Icon src={EditIcon} alt="edit" /> Edit{" "}
-            </ActionItem>
-            <ActionItem>
-              <Icon src={ReplyIcon} alt="reply" /> Reply{" "}
-            </ActionItem>
-          </ActionButtons>
-        </AuthorContainer>
-        <CommentText>
-          <Tagged>@Tebbon</Tagged> {props.comment.content}
-        </CommentText>
-      </Right>
+      <CommentContainer>
+        <Left>
+          <NumOperation onClick={() => setnum(num + 1)}>
+            <PlusIcon />
+          </NumOperation>
+          <Num> {num} </Num>
+          <NumOperation onClick={() => setnum(num - 1)}>
+            <MinusIcon />
+          </NumOperation>
+        </Left>
+        <Right>
+          <AuthorContainer>
+            <AuthorPic
+              src={props.comment.user.image.png}
+              alt={props.comment.username}
+            />
+            <AuthorUsername> {props.comment.user.username} </AuthorUsername>
+            {data.currentUser.username === props.comment.user.username && (
+              <Tag> You </Tag>
+            )}
+            <CreateddAt> {props.comment.createdAt}</CreateddAt>
+
+            {data.currentUser.username === props.comment.user.username ? (
+              <ActionButtons>
+                <ActionItem delete>
+                  <Icon src={DeleteIcon} alt="delete" /> Delete
+                </ActionItem>
+                <ActionItem>
+                  <Icon src={EditIcon} alt="edit" /> Edit{" "}
+                </ActionItem>
+              </ActionButtons>
+            ) : (
+              <ActionButtons>
+                <ActionItem>
+                  <Icon src={ReplyIcon} alt="reply" /> Reply{" "}
+                </ActionItem>
+              </ActionButtons>
+            )}
+          </AuthorContainer>
+          <CommentText>
+            <Tagged>
+              {props.comment.replyingTo && "@" + props.comment.replyingTo}
+            </Tagged>{" "}
+            {props.comment.content}
+          </CommentText>
+        </Right>
+      </CommentContainer>
+      {props.comment.replies && props.comment.replies.length > 0 && (
+        <CommentReply replies={props.comment.replies} />
+      )}
     </Container>
   );
 };
