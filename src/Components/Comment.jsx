@@ -10,6 +10,7 @@ import ReplyIcon from "../assets/images/icon-reply.svg";
 import { ReactComponent as PlusIcon } from "../assets/images/icon-plus.svg";
 import { ReactComponent as MinusIcon } from "../assets/images/icon-minus.svg";
 import { CommentReply } from "./CommentReply";
+import { AddComment } from "./AddComment";
 
 const Container = styled.div``;
 
@@ -111,6 +112,8 @@ const Tagged = styled.span`
 export const Comment = (props) => {
   const [num, setnum] = useState(props.comment.score);
 
+  const [reply, setReply] = useState(false);
+
   return (
     <Container>
       <CommentContainer>
@@ -146,8 +149,9 @@ export const Comment = (props) => {
               </ActionButtons>
             ) : (
               <ActionButtons>
-                <ActionItem>
-                  <Icon src={ReplyIcon} alt="reply" /> Reply{" "}
+                <ActionItem onClick={() => setReply(!reply)}>
+                  <Icon src={ReplyIcon} alt="reply" />
+                  {reply ? "Undo" : "Reply"}
                 </ActionItem>
               </ActionButtons>
             )}
@@ -155,13 +159,16 @@ export const Comment = (props) => {
           <CommentText>
             <Tagged>
               {props.comment.replyingTo && "@" + props.comment.replyingTo}
-            </Tagged>{" "}
+            </Tagged>
             {props.comment.content}
           </CommentText>
         </Right>
       </CommentContainer>
       {props.comment.replies && props.comment.replies.length > 0 && (
         <CommentReply replies={props.comment.replies} />
+      )}
+      {reply && (
+        <AddComment type="reply" replyTo={props.comment.user.username} />
       )}
     </Container>
   );

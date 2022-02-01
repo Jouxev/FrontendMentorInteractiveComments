@@ -61,7 +61,7 @@ const Button = styled.button`
 `;
 
 export const AddComment = (props) => {
-  const [commentText, setcommentText] = useState("asdsad");
+  const [commentText, setcommentText] = useState("");
   const [comment, setComment] = useState({
     id: Math.floor(Math.random() * 100),
     content: commentText,
@@ -76,6 +76,9 @@ export const AddComment = (props) => {
     },
     replies: [],
   });
+  useEffect(() => {
+    setcommentText(props.type === "reply" ? "@" + props.replyTo + " " : "");
+  }, []);
 
   useEffect(() => {
     setComment({
@@ -92,20 +95,32 @@ export const AddComment = (props) => {
       </Right>
       <Center>
         <TextArea
+          autoFocus
           placeholder="Add Comment ..."
           value={commentText}
           onChange={(e) => setcommentText(e.target.value)}
         />
       </Center>
       <Left>
-        <Button
-          onClick={() => {
-            props.addcomment(comment);
-            setcommentText("");
-          }}
-        >
-          Send
-        </Button>
+        {props.type === "reply" ? (
+          <Button
+            onClick={() => {
+              props.addcomment(comment);
+              setcommentText("");
+            }}
+          >
+            Reply
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              props.addcomment(comment);
+              setcommentText("");
+            }}
+          >
+            Send
+          </Button>
+        )}
       </Left>
     </Container>
   );
