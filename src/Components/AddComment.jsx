@@ -35,6 +35,7 @@ const TextArea = styled.textarea`
   padding: 5px 10px;
   border: 1px solid var(--LightGray);
   outline: none;
+  color: var(--DarkBlue);
   border-radius: 5px;
   resize: none;
   &:focus {
@@ -62,6 +63,22 @@ const Button = styled.button`
 
 export const AddComment = (props) => {
   const [commentText, setcommentText] = useState("");
+
+  const [reply, setReply] = useState({
+    id: Math.floor(Math.random() * 100),
+    content: commentText,
+    createdAt: "just Now",
+    score: 0,
+    replyTo: props.replyToCommentAuthor,
+    user: {
+      image: {
+        png: data.currentUser.image.png,
+        webp: data.currentUser.image.webp,
+      },
+      username: data.currentUser.username,
+    },
+  });
+
   const [comment, setComment] = useState({
     id: Math.floor(Math.random() * 100),
     content: commentText,
@@ -76,6 +93,7 @@ export const AddComment = (props) => {
     },
     replies: [],
   });
+
   useEffect(() => {
     setcommentText(props.type === "reply" ? "@" + props.replyTo + " " : "");
   }, []);
@@ -83,6 +101,12 @@ export const AddComment = (props) => {
   useEffect(() => {
     setComment({
       ...comment,
+      content: commentText,
+      id: Math.floor(Math.random() * 100),
+    });
+
+    setReply({
+      ...reply,
       content: commentText,
       id: Math.floor(Math.random() * 100),
     });
@@ -94,22 +118,32 @@ export const AddComment = (props) => {
         <Avatar src={data.currentUser.image.png} />
       </Right>
       <Center>
-        <TextArea
-          autoFocus
-          placeholder="Add Comment ..."
-          value={commentText}
-          onChange={(e) => setcommentText(e.target.value)}
-        />
+        {props.type === "reply" ? (
+          <TextArea
+            autoFocus
+            placeholder="Add Reply ..."
+            value={commentText}
+            onChange={(e) => setcommentText(e.target.value)}
+          />
+        ) : (
+          <TextArea
+            autoFocus
+            placeholder="Add Comment ..."
+            value={commentText}
+            onChange={(e) => setcommentText(e.target.value)}
+          />
+        )}
       </Center>
       <Left>
         {props.type === "reply" ? (
           <Button
             onClick={() => {
-              props.addcomment(comment);
+              props.addreply(props.replyToCommentId, reply);
+              props.setreply(false);
               setcommentText("");
             }}
           >
-            Reply
+            REPLY
           </Button>
         ) : (
           <Button
@@ -118,7 +152,7 @@ export const AddComment = (props) => {
               setcommentText("");
             }}
           >
-            Send
+            SEND
           </Button>
         )}
       </Left>

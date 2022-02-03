@@ -25,7 +25,18 @@ export const CommentReply = (props) => {
   return (
     <Container>
       {props.replies.map((reply) => (
-        <Comment type="reply" comment={reply} key={reply.id} />
+        <Comment
+          type="reply"
+          comment={reply}
+          key={reply.id}
+          id={reply.id}
+          updatereply={(id, content) => {
+            props.updatereply(id, content);
+          }}
+          addreply={(id, comment) => {
+            props.addreply(id, comment);
+          }}
+        />
       ))}
     </Container>
   );

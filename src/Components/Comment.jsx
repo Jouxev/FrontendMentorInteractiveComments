@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { MdDelete, MdEdit, MdReply } from "react-icons/md";
 
 import { data } from "../data";
 import DeleteIcon from "../assets/images/icon-delete.svg";
@@ -105,6 +104,37 @@ const CommentText = styled.p`
   font-weight: 400;
   color: var(--GrayishBlue);
 `;
+const ActionContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
+const Button = styled.button`
+  background-color: var(--ModerateBlue);
+  padding: 10px 10px;
+  color: var(--White);
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  &:hover {
+    opacity: 0.4;
+  }
+`;
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 60px;
+  margin: 10px 0px;
+  padding: 5px 0px;
+  border: 1px solid var(--LightGray);
+  outline: none;
+  color: var(--DarkBlue);
+  border-radius: 5px;
+  resize: none;
+  &:focus {
+    outline: 1px solid var(--DarkBlue);
+  }
+`;
 const Tagged = styled.span`
   font-weight: 500;
   color: var(--ModerateBlue);
@@ -113,6 +143,9 @@ export const Comment = (props) => {
   const [num, setnum] = useState(props.comment.score);
 
   const [reply, setReply] = useState(false);
+  const [edit, setEdit] = useState(false);
+
+  const [editingComment, setEditingComment] = useState(props.comment.content);
 
   return (
     <Container>
@@ -143,8 +176,13 @@ export const Comment = (props) => {
                 <ActionItem delete>
                   <Icon src={DeleteIcon} alt="delete" /> Delete
                 </ActionItem>
-                <ActionItem>
-                  <Icon src={EditIcon} alt="edit" /> Edit{" "}
+                <ActionItem
+                  onClick={() => {
+                    setEdit(!edit);
+                  }}
+                >
+                  <Icon src={EditIcon} alt="edit" />
+                  {edit ? "Undo" : "Edit"}
                 </ActionItem>
               </ActionButtons>
             ) : (
@@ -156,19 +194,63 @@ export const Comment = (props) => {
               </ActionButtons>
             )}
           </AuthorContainer>
-          <CommentText>
-            <Tagged>
-              {props.comment.replyingTo && "@" + props.comment.replyingTo}
-            </Tagged>
-            {props.comment.content}
-          </CommentText>
+          {!edit && (
+            <CommentText>
+              <Tagged>
+                {props.comment.replyingTo &&
+                  "@" + props.comment.replyingTo + " "}
+              </Tagged>
+              {props.comment.content}
+            </CommentText>
+          )}
+
+          {props.comment.user.username === data.currentUser.username &&
+            edit && (
+              <TextArea
+                autoFocus
+                value={editingComment}
+                onChange={(e) => setEditingComment(e.target.value)}
+              />
+            )}
+
+          {edit && (
+            <ActionContainer>
+              <Button
+                onClick={() => {
+                  props.type === "reply"
+                    ? props.updatereply(props.id, editingComment)
+                    : props.updatecomment(props.id, editingComment);
+                  setEdit(!edit);
+                }}
+              >
+                UPDATE
+              </Button>
+            </ActionContainer>
+          )}
         </Right>
       </CommentContainer>
       {props.comment.replies && props.comment.replies.length > 0 && (
-        <CommentReply replies={props.comment.replies} />
+        <CommentReply
+          replies={props.comment.replies}
+          updatereply={(id, content) => {
+            props.updatereply(id, content);
+          }}
+          addreply={(id, comment) => {
+            props.addreply(id, comment);
+          }}
+        />
       )}
       {reply && (
-        <AddComment type="reply" replyTo={props.comment.user.username} />
+        <AddComment
+          type="reply"
+          addreply={(id, comment) => {
+            props.addreply(id, comment);
+          }}
+          setreply={setReply}
+          replyTo={props.comment.user.username}
+          replyToCommentId={props.comment.id}
+          replyToCommentAuthor={props.comment.user.username}
+        />
       )}
     </Container>
   );
