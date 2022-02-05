@@ -36,6 +36,10 @@ export const CommentReply = (props) => {
           addreply={(id, comment) => {
             props.addreply(id, comment);
           }}
+          deletecomment={(id, type) => props.deletecomment(id, type)}
+          belongsTo={props.commentbelong}
+          rerender={props.rerender}
+          openDialog={props.openDialog}
         />
       ))}
     </Container>

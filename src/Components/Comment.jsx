@@ -10,8 +10,9 @@ import { ReactComponent as PlusIcon } from "../assets/images/icon-plus.svg";
 import { ReactComponent as MinusIcon } from "../assets/images/icon-minus.svg";
 import { CommentReply } from "./CommentReply";
 import { AddComment } from "./AddComment";
+import { mobile } from "../responsive";
 
-const Container = styled.div``;
+const Container = styled.article``;
 
 const CommentContainer = styled.div`
   background-color: var(--White);
@@ -21,6 +22,9 @@ const CommentContainer = styled.div`
   display: flex;
   padding: 10px 20px;
   margin-bottom: 20px;
+  ${mobile({
+    flexDirection: "column",
+  })}
 `;
 const Left = styled.div`
   display: flex;
@@ -32,7 +36,35 @@ const Left = styled.div`
   height: 60px;
   border-radius: 10px;
   background-color: var(--VeryLightGray);
+  ${mobile({
+    display: "none",
+  })}
 `;
+const MobileBottm = styled.div`
+  display: flex;
+`;
+
+const MobileLeft = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  height: 15px;
+  width: 60px;
+  border-radius: 10px;
+  background-color: var(--VeryLightGray);
+  ${mobile({
+    display: "flex",
+  })}
+`;
+const MobileRight = styled.div`
+  display: none;
+  margin-left: auto;
+  ${mobile({
+    display: "flex",
+  })}
+`;
+
 const NumOperation = styled.div`
   fill: var(--LightGrayishBlue);
   cursor: pointer;
@@ -47,6 +79,9 @@ const Num = styled.div`
 const Right = styled.div`
   width: 100%;
   margin: 0px 20px;
+  ${mobile({
+    margin: "0px",
+  })}
 `;
 const AuthorContainer = styled.div`
   display: flex;
@@ -83,7 +118,14 @@ const ActionButtons = styled.div`
   margin-left: auto;
   display: flex;
   align-items: center;
+  ${mobile({
+    display: "none",
+  })}
 `;
+const MobileActionButtons = styled.div`
+  display: flex;
+`;
+
 const ActionItem = styled.div`
   font-size: 14px;
   display: flex;
@@ -130,6 +172,7 @@ const TextArea = styled.textarea`
   outline: none;
   color: var(--DarkBlue);
   border-radius: 5px;
+  cursor: pointer;
   resize: none;
   &:focus {
     outline: 1px solid var(--DarkBlue);
@@ -173,7 +216,14 @@ export const Comment = (props) => {
 
             {data.currentUser.username === props.comment.user.username ? (
               <ActionButtons>
-                <ActionItem delete>
+                <ActionItem
+                  delete
+                  onClick={() => {
+                    props.type === "reply"
+                      ? props.deletecomment(props.id, "reply")
+                      : props.deletecomment(props.id, "comment");
+                  }}
+                >
                   <Icon src={DeleteIcon} alt="delete" /> Delete
                 </ActionItem>
                 <ActionItem
@@ -228,28 +278,78 @@ export const Comment = (props) => {
             </ActionContainer>
           )}
         </Right>
+        <MobileBottm>
+          <MobileLeft>
+            <NumOperation onClick={() => setnum(num + 1)}>
+              <PlusIcon />
+            </NumOperation>
+            <Num> {num} </Num>
+            <NumOperation onClick={() => setnum(num - 1)}>
+              <MinusIcon />
+            </NumOperation>
+          </MobileLeft>
+          <MobileRight>
+            {data.currentUser.username === props.comment.user.username ? (
+              <MobileActionButtons>
+                <ActionItem
+                  delete
+                  onClick={() => {
+                    props.type === "reply"
+                      ? props.deletecomment(props.id, "reply")
+                      : props.deletecomment(props.id, "comment");
+                  }}
+                >
+                  <Icon src={DeleteIcon} alt="delete" /> Delete
+                </ActionItem>
+                <ActionItem
+                  onClick={() => {
+                    setEdit(!edit);
+                  }}
+                >
+                  <Icon src={EditIcon} alt="edit" />
+                  {edit ? "Undo" : "Edit"}
+                </ActionItem>
+              </MobileActionButtons>
+            ) : (
+              <MobileActionButtons>
+                <ActionItem onClick={() => setReply(!reply)}>
+                  <Icon src={ReplyIcon} alt="reply" />
+                  {reply ? "Undo" : "Reply"}
+                </ActionItem>
+              </MobileActionButtons>
+            )}
+          </MobileRight>
+        </MobileBottm>
       </CommentContainer>
       {props.comment.replies && props.comment.replies.length > 0 && (
         <CommentReply
           replies={props.comment.replies}
+          commentbelong={props.id}
           updatereply={(id, content) => {
             props.updatereply(id, content);
+          }}
+          deletecomment={(id, type) => {
+            props.deletecomment(id, type);
           }}
           addreply={(id, comment) => {
             props.addreply(id, comment);
           }}
+          rerender={props.rerender}
         />
       )}
       {reply && (
         <AddComment
           type="reply"
+          commentTo={props.type}
           addreply={(id, comment) => {
             props.addreply(id, comment);
           }}
+          commentbelong={props.belongsTo}
           setreply={setReply}
           replyTo={props.comment.user.username}
           replyToCommentId={props.comment.id}
           replyToCommentAuthor={props.comment.user.username}
+          rerender={props.rerender}
         />
       )}
     </Container>

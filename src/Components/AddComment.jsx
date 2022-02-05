@@ -37,6 +37,7 @@ const TextArea = styled.textarea`
   outline: none;
   color: var(--DarkBlue);
   border-radius: 5px;
+  cursor: pointer;
   resize: none;
   &:focus {
     outline: 1px solid var(--DarkBlue);
@@ -138,8 +139,14 @@ export const AddComment = (props) => {
         {props.type === "reply" ? (
           <Button
             onClick={() => {
-              props.addreply(props.replyToCommentId, reply);
+              if (props.commentTo === "reply") {
+                props.addreply(props.commentbelong, reply);
+              } else {
+                props.addreply(props.replyToCommentId, reply);
+              }
+
               props.setreply(false);
+              props.rerender();
               setcommentText("");
             }}
           >
